@@ -1,0 +1,24 @@
+{
+  rules: {
+    'explicit-return': 2,
+    'no-classes': 0,
+    'no-deletes': 2,
+    'no-exceptions': 2,
+    'no-exports': 0,
+    'no-fors': 2,
+    'no-function-expressions': 0,
+    'no-ifs': 2,
+    'no-imports': 0,
+    'no-instanceofs': 2,
+    'no-new': 2,
+    'no-nulls': 2,
+    'no-reassigns': 2,
+    'no-switches': 2,
+    'no-this': 2,
+    'no-typeofs': 2,
+    'no-undefined': 0,
+    'no-variable-declaration': 0,
+    'no-whiles': 2,
+    'no-withs': 2
+  }
+}
