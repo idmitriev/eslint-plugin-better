@@ -1,0 +1,18 @@
+{
+  "name": "eslint-plugin-better",
+  "version": "0.0.1",
+  "description": "Avoid some language features to write better code",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "eslint",
+    "eslintplugin"
+  ],
+  "author": "idmitriev",
+  "license": "MIT",
+  "peerDependencies": {
+    "eslint": ">=0.8.0"
+  }
+}
