@@ -11,7 +11,7 @@
     "eslintplugin"
   ],
   "author": "idmitriev",
-  "license": "MIT"
+  "license": "MIT",
   "peerDependencies": {
     "eslint": ">=0.8.0"
   },
