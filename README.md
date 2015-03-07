@@ -5,6 +5,9 @@
 
 Avoid some language features to write better code.
 
+Inspired by [this talk](https://www.youtube.com/watch?v=PSGEjv3Tqo0).
+
+
 [1]: https://badge.fury.io/js/eslint-plugin-better.svg
 [2]: https://badge.fury.io/js/eslint-plugin-better
 [3]: https://david-dm.org/idmitriev/eslint-plugin-better.svg
