@@ -1,9 +1,9 @@
 module.exports = function(context) {
 	return {
-		"Identifier": function(node) {
-			if ( node.value === 'undefined' ) {
-				return context.report(node, 'Unexpected undefined, use null instead');
-			}
+		'Identifier': function(node) {
+			return node.value === 'undefined' ?
+				context.report(node, 'Unexpected undefined, use null instead') :
+				undefined;
 		}
 	};
 };
