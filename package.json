@@ -13,9 +13,9 @@
   "author": "idmitriev",
   "license": "MIT",
   "peerDependencies": {
-    "eslint": ">=0.8.0"
+    "eslint": ">=0.16.0"
   },
   "devDependencies": {
-    "eslint": "^0.15.1"
+    "eslint": "^0.16.1"
   }
 }
