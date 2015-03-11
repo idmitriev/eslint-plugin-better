@@ -18,8 +18,7 @@ module.exports = {
 		'no-typeofs': require('./rules/no-typeofs.js'),
 		'no-undefined': require('./rules/no-undefined.js'),
 		'no-variable-declaration': require('./rules/no-variable-declarations.js'),
-		'no-whiles': require('./rules/no-whiles.js'),
-		'no-withs': require('./rules/no-withs.js')
+		'no-whiles': require('./rules/no-whiles.js')
 	},
 	rulesConfig: {
 		'explicit-return': 2,
@@ -40,7 +39,6 @@ module.exports = {
 		'no-typeofs': 2,
 		'no-undefined': 0,
 		'no-variable-declaration': 0,
-		'no-whiles': 2,
-		'no-withs': 2
+		'no-whiles': 2
 	}
 };

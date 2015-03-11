@@ -22,7 +22,6 @@
     "no-undefined": 0,
     "no-variable-declaration": 0,
     "no-whiles": 2,
-    "no-withs": 2,
 
     "quotes": [2, "single"],
     "strict": 0,
