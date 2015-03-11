@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-better",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Avoid some language features to write better code",
   "main": "index.js",
   "scripts": {
