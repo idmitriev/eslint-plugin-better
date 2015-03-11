@@ -10,8 +10,9 @@
     "eslint",
     "eslintplugin"
   ],
-  "author": "idmitriev",
+  "author": "Ivan Dmitriev <iam@ivandmitriev.com>",
   "license": "MIT",
+  "repository": "https://github.com/idmitriev/eslint-plugin-better.git",
   "peerDependencies": {
     "eslint": ">=0.16.0"
   },
