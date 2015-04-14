@@ -12,7 +12,11 @@ module.exports = function(context) {
 	return {
 		'FunctionDeclaration': enterFunction,
 		'FunctionExpression': enterFunction,
-		'ArrowFunctionExpression': enterFunction,
+		'ArrowFunctionExpression': function(node){
+			return node.body.type === 'BlockStatement' ?
+				enterFunction(node) :
+				null;
+		},
 
 		'FunctionDeclaration:exit': exitFunction,
 		'FunctionExpression:exit': exitFunction,
