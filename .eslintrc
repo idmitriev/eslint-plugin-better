@@ -4,6 +4,7 @@
   },
   "rules": {
     "explicit-return": 2,
+    "must-return": 2,
     "no-classes": 0,
     "no-deletes": 2,
     "no-exceptions": 2,

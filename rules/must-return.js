@@ -1,8 +1,9 @@
 /**
- * @fileoverview Rule to flag consistent return values
+ * @fileoverview Rule to flag enforce return values
  * @author Nicholas C. Zakas
  *
  * Copyright JS Foundation and other contributors, https://js.foundation
+ * Copyright 2017 Thomas Grainger <eslint-plugin-better@graingert.co.uk>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +29,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-const upperFirst = require('lodash.upperfirst');
+const upperFirst = require("lodash.upperfirst");
 
 const astUtils = require("eslint/lib/ast-utils");
 
@@ -71,138 +72,115 @@ function isClassConstructor(node) {
 // Rule Definition
 //------------------------------------------------------------------------------
 
-module.exports = {
-    meta: {
-        docs: {
-            description: "require `return` statements to either always or never specify values",
-            category: "Best Practices",
-            recommended: false
-        },
+module.exports = function(context) {
+    const treatUndefinedAsUnspecified = false;
+    let funcInfo = null;
 
-        schema: [{
-            type: "object",
-            properties: {
-                treatUndefinedAsUnspecified: {
-                    type: "boolean"
-                }
-            },
-            additionalProperties: false
-        }]
-    },
+    /**
+    * Checks whether of not the implicit returning is consistent if the last
+    * code path segment is reachable.
+    *
+    * @param {ASTNode} node - A program/function node to check.
+    * @returns {void}
+    */
+    function checkLastSegment(node) {
+      let loc, name;
 
-    create(context) {
-        const options = context.options[0] || {};
-        const treatUndefinedAsUnspecified = options.treatUndefinedAsUnspecified === true;
-        let funcInfo = null;
+      /*
+       * Skip if it expected no return value or unreachable.
+       * When unreachable, all paths are returned or thrown.
+       */
+      if (funcInfo.codePath.currentSegments.every(isUnreachable) ||
+          isClassConstructor(node)
+      ) {
+          return;
+      }
 
-        /**
-         * Checks whether of not the implicit returning is consistent if the last
-         * code path segment is reachable.
-         *
-         * @param {ASTNode} node - A program/function node to check.
-         * @returns {void}
-         */
-        function checkLastSegment(node) {
-            let loc, name;
+      // Adjust a location and a message.
+      if (node.type === "Program") {
 
-            /*
-             * Skip if it expected no return value or unreachable.
-             * When unreachable, all paths are returned or thrown.
-             */
-            if (!funcInfo.hasReturnValue ||
-                funcInfo.codePath.currentSegments.every(isUnreachable) ||
-                astUtils.isES5Constructor(node) ||
-                isClassConstructor(node)
-            ) {
-                return;
-            }
+          // The head of program.
+          loc = { line: 1, column: 0 };
+          name = "program";
+      } else if (node.type === "ArrowFunctionExpression") {
 
-            // Adjust a location and a message.
-            if (node.type === "Program") {
+          // `=>` token
+          loc = context.getSourceCode().getTokenBefore(node.body, astUtils.isArrowToken).loc.start;
+      } else if (
+          node.parent.type === "MethodDefinition" ||
+          (node.parent.type === "Property" && node.parent.method)
+      ) {
 
-                // The head of program.
-                loc = { line: 1, column: 0 };
-                name = "program";
-            } else if (node.type === "ArrowFunctionExpression") {
+          // Method name.
+          loc = node.parent.key.loc.start;
+      } else {
 
-                // `=>` token
-                loc = context.getSourceCode().getTokenBefore(node.body, astUtils.isArrowToken).loc.start;
-            } else if (
-                node.parent.type === "MethodDefinition" ||
-                (node.parent.type === "Property" && node.parent.method)
-            ) {
+          // Function name or `function` keyword.
+          loc = (node.id || node).loc.start;
+      }
 
-                // Method name.
-                loc = node.parent.key.loc.start;
-            } else {
+      if (!name) {
+          name = astUtils.getFunctionNameWithKind(node);
+      }
 
-                // Function name or `function` keyword.
-                loc = (node.id || node).loc.start;
-            }
-
-            if (!name) {
-                name = astUtils.getFunctionNameWithKind(node);
-            }
-
-            // Reports.
-            context.report({
-                node,
-                loc,
-                message: "Expected to return a value at the end of {{name}}.",
-                data: { name }
-            });
-        }
-
-        return {
-
-            // Initializes/Disposes state of each code path.
-            onCodePathStart(codePath, node) {
-                funcInfo = {
-                    upper: funcInfo,
-                    codePath,
-                    hasReturn: false,
-                    hasReturnValue: false,
-                    message: "",
-                    node
-                };
-            },
-            onCodePathEnd() {
-                funcInfo = funcInfo.upper;
-            },
-
-            // Reports a given return statement if it's inconsistent.
-            ReturnStatement(node) {
-                const argument = node.argument;
-                let hasReturnValue = Boolean(argument);
-
-                if (treatUndefinedAsUnspecified && hasReturnValue) {
-                    hasReturnValue = !isIdentifier(argument, "undefined") && argument.operator !== "void";
-                }
-
-                if (!funcInfo.hasReturn) {
-                    funcInfo.hasReturn = true;
-                    funcInfo.hasReturnValue = hasReturnValue;
-                    funcInfo.message = "{{name}} expected {{which}} return value.";
-                    funcInfo.data = {
-                        name: funcInfo.node.type === "Program"
-                            ? "Program"
-                            : upperFirst(astUtils.getFunctionNameWithKind(funcInfo.node)),
-                        which: hasReturnValue ? "a" : "no"
-                    };
-                } else if (funcInfo.hasReturnValue !== hasReturnValue) {
-                    context.report({
-                        node,
-                        message: funcInfo.message,
-                        data: funcInfo.data
-                    });
-                }
-            },
-
-            // Reports a given program/function if the implicit returning is not consistent.
-            "Program:exit": checkLastSegment,
-            "FunctionDeclaration:exit": checkLastSegment,
-            "FunctionExpression:exit": checkLastSegment,
-            "ArrowFunctionExpression:exit": checkLastSegment
-        };
+      // Reports.
+      context.report({
+          node,
+          loc,
+          message: "Expected to return a value at the end of {{name}}.",
+          data: { name }
+      });
     }
+
+    return {
+
+      // Initializes/Disposes state of each code path.
+      onCodePathStart(codePath, node) {
+          funcInfo = {
+              upper: funcInfo,
+              codePath,
+              hasReturn: false,
+              hasReturnValue: false,
+              message: "",
+              node
+          };
+      },
+      onCodePathEnd() {
+          funcInfo = funcInfo.upper;
+      },
+
+      // Reports a given return statement if it's inconsistent.
+      ReturnStatement(node) {
+          const argument = node.argument;
+          let hasReturnValue = Boolean(argument);
+
+          if (treatUndefinedAsUnspecified && hasReturnValue) {
+              hasReturnValue = !isIdentifier(argument, "undefined") && argument.operator !== "void";
+          }
+
+          if (!funcInfo.hasReturn) {
+              funcInfo.hasReturn = true;
+              funcInfo.hasReturnValue = hasReturnValue;
+              funcInfo.message = "{{name}} expected {{which}} return value.";
+              funcInfo.data = {
+                  name: funcInfo.node.type === "Program"
+                      ? "Program"
+                      : upperFirst(astUtils.getFunctionNameWithKind(funcInfo.node)),
+                  which: hasReturnValue ? "a" : "no"
+              };
+          } else if (funcInfo.hasReturnValue !== hasReturnValue) {
+              context.report({
+                  node,
+                  message: funcInfo.message,
+                  data: funcInfo.data
+              });
+          }
+      },
+
+      // Reports a given program/function if the implicit returning is not consistent.
+      "Program:exit": checkLastSegment,
+      "FunctionDeclaration:exit": checkLastSegment,
+      "FunctionExpression:exit": checkLastSegment,
+      "ArrowFunctionExpression:exit": checkLastSegment
+    };
 };

@@ -1,6 +1,7 @@
 module.exports = {
 	rules: {
 		'explicit-return': require('./rules/explicit-return.js'),
+		'must-return': require('./rules/must-return.js'),
 		'no-classes': require('./rules/no-classes.js'),
 		'no-deletes': require('./rules/no-deletes.js'),
 		'no-exceptions': require('./rules/no-exceptions.js'),
@@ -22,6 +23,7 @@ module.exports = {
 	},
 	rulesConfig: {
 		'explicit-return': 2,
+		'must-return': 2,
 		'no-classes': 0,
 		'no-deletes': 2,
 		'no-exceptions': 2,
