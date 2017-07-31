@@ -68,6 +68,13 @@ function isClassConstructor(node) {
         node.parent.kind === "constructor";
 }
 
+function isSimpleArrow(node) {
+    return (
+      node.type === "ArrowFunctionExpression" &&
+      node.body.type !== "BlockStatement"
+    );
+}
+
 //------------------------------------------------------------------------------
 // Rule Definition
 //------------------------------------------------------------------------------
@@ -91,6 +98,7 @@ module.exports = function(context) {
        * When unreachable, all paths are returned or thrown.
        */
       if (funcInfo.codePath.currentSegments.every(isUnreachable) ||
+          isSimpleArrow(node) ||
           isClassConstructor(node)
       ) {
           return;
@@ -177,8 +185,6 @@ module.exports = function(context) {
           }
       },
 
-      // Reports a given program/function if the implicit returning is not consistent.
-      "Program:exit": checkLastSegment,
       "FunctionDeclaration:exit": checkLastSegment,
       "FunctionExpression:exit": checkLastSegment,
       "ArrowFunctionExpression:exit": checkLastSegment
