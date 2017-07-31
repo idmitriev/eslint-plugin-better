@@ -18,5 +18,8 @@
   },
   "devDependencies": {
     "eslint": "^0.16.1"
+  },
+  "dependencies": {
+    "lodash.upperfirst": "^4.3.1"
   }
 }
