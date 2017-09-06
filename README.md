@@ -29,7 +29,8 @@ Inspired by [this talk](https://www.youtube.com/watch?v=PSGEjv3Tqo0).
 | no-undefined | Forbids use of undefined. | 'no-undefined': 0 |
 | no-variable-declaration | Forbids declaring variables. | 'no-variable-declaration': 0 |
 | no-whiles | Forbids use while, do-while statements. | 'no-whiles': 2 |
-| explicit-return | Every function should have a return statement. | 'explicit-return': 2 |
+| must-return | Every branch of every function should have a return statement. | 'must-return': 2 |
+| explicit-return | Stricter version of must-return: every function should have a top level return statement. | 'explicit-return': 2 |
 
 
 [1]: https://badge.fury.io/js/eslint-plugin-better.svg
